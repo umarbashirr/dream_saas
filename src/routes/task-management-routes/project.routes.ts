@@ -11,11 +11,11 @@ import {
 const router = Router();
 
 // Secure routes
-router.route("/projects").get(verifyJWT, getAllProjects);
+router.route("/").get(verifyJWT, getAllProjects);
 
 router.route("/projects/:id").get(verifyJWT, getProjectById);
 
-router.route("/projects").post(verifyJWT, createProject);
+router.route("/").post(verifyJWT, createProject);
 
 router.route("/projects/:id").put(verifyJWT, updateProject);
 

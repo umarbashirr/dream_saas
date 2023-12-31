@@ -15,7 +15,22 @@ const getAllProjects = asyncHandler(async (req: any, res: Response) => {
 
 const getProjectById = asyncHandler(async (req: any, res: Response) => {});
 
-const createProject = asyncHandler(async (req: any, res: Response) => {});
+const createProject = asyncHandler(async (req: any, res: Response) => {
+  const userId = req?.user?._id;
+  const { name, description } = req.body;
+
+  const newProject = new Project({
+    name,
+    description,
+    owner: userId,
+  });
+
+  await newProject.save();
+
+  res
+    .status(201)
+    .json(new ApiResponse(201, "Project created successfully", newProject));
+});
 
 const updateProject = asyncHandler(async (req: any, res: Response) => {});
 
