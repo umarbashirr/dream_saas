@@ -20,7 +20,9 @@ export const verifyJWT = asyncHandler(
 
     // Check if user exists
 
-    const user = await User.findById(decoded.userId).select("-password");
+    const user = await User.findById(decoded.userId).select(
+      "-password -refreshToken -__v -createdAt -updatedAt"
+    );
 
     if (!user) {
       throw new ApiError(401, "Invalid Token");

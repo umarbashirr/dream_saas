@@ -34,46 +34,44 @@ const cookieOptions = {
   secure: process.env.NODE_ENV === "production",
 };
 
-export const registerUser = asyncHandler(
-  async (req: Request, res: Response) => {
-    const { name, username, email, password } = req.body;
+const registerUser = asyncHandler(async (req: Request, res: Response) => {
+  const { name, username, email, password } = req.body;
 
-    if (!name || !username || !email || !password) {
-      throw new ApiError(400, "Please provide all the required fields");
-    }
-
-    if (password.length < 6) {
-      throw new ApiError(400, "Password must be at least 6 characters");
-    }
-
-    if (!email.includes("@")) {
-      throw new ApiError(400, "Please provide a valid email");
-    }
-
-    // Check if user already exists
-
-    const existedUser = await User.findOne({
-      $or: [{ username }, { email }],
-    });
-
-    if (existedUser) {
-      throw new ApiError(400, "User already exists");
-    }
-
-    const user = await User.create({
-      name,
-      username: username.toLowerCase(),
-      email,
-      password,
-    });
-
-    res
-      .status(201)
-      .json(new ApiResponse(201, "User registered successfully", user));
+  if (!name || !username || !email || !password) {
+    throw new ApiError(400, "Please provide all the required fields");
   }
-);
 
-export const loginUser = asyncHandler(async (req: Request, res: Response) => {
+  if (password.length < 6) {
+    throw new ApiError(400, "Password must be at least 6 characters");
+  }
+
+  if (!email.includes("@")) {
+    throw new ApiError(400, "Please provide a valid email");
+  }
+
+  // Check if user already exists
+
+  const existedUser = await User.findOne({
+    $or: [{ username }, { email }],
+  });
+
+  if (existedUser) {
+    throw new ApiError(400, "User already exists");
+  }
+
+  const user = await User.create({
+    name,
+    username: username.toLowerCase(),
+    email,
+    password,
+  });
+
+  res
+    .status(201)
+    .json(new ApiResponse(201, "User registered successfully", user));
+});
+
+const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -111,7 +109,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
     );
 });
 
-export const logoutUser = asyncHandler(async (req: any, res: Response) => {
+const logoutUser = asyncHandler(async (req: any, res: Response) => {
   await User.findByIdAndUpdate(
     req.user._id,
     { $set: { refreshToken: null } },
@@ -125,7 +123,7 @@ export const logoutUser = asyncHandler(async (req: any, res: Response) => {
     .json(new ApiResponse(200, "User logged out successfully"));
 });
 
-export const refreshToken = asyncHandler(async (req: any, res: Response) => {
+const refreshToken = asyncHandler(async (req: any, res: Response) => {
   console.log(req.cookies);
   const { refreshToken: refreshTokenFromCookie } = req.cookies;
 
@@ -166,3 +164,44 @@ export const refreshToken = asyncHandler(async (req: any, res: Response) => {
       })
     );
 });
+
+const updatePassword = asyncHandler(async (req: any, res: Response) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    throw new ApiError(400, "Please provide all the required fields");
+  }
+
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  const isMatch = await user.comparePassword(currentPassword);
+
+  if (!isMatch) {
+    throw new ApiError(400, "Invalid credentials");
+  }
+
+  user.password = newPassword;
+
+  await user.save();
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Password updated successfully"));
+});
+
+const getCurrentUser = asyncHandler(async (req: any, res: Response) => {
+  return res.status(200).json(new ApiResponse(200, "User found", req.user));
+});
+
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  refreshToken,
+  updatePassword,
+  getCurrentUser,
+};
