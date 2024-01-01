@@ -31,7 +31,7 @@ const generateRefreshAndAccessToken = async (id: any) => {
 
 const cookieOptions = {
   httpOnly: true,
-  secure: true,
+  secure: process.env.NODE_ENV === "production",
 };
 
 export const registerUser = asyncHandler(
@@ -126,6 +126,7 @@ export const logoutUser = asyncHandler(async (req: any, res: Response) => {
 });
 
 export const refreshToken = asyncHandler(async (req: any, res: Response) => {
+  console.log(req.cookies);
   const { refreshToken: refreshTokenFromCookie } = req.cookies;
 
   if (!refreshTokenFromCookie) {
