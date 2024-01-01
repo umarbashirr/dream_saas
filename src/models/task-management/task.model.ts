@@ -19,6 +19,7 @@ const TaskSchema = new Schema(
     },
     assignedTo: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
     projectId: { type: Schema.Types.ObjectId, ref: "Project", required: true },
+    tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
   },
   {
     timestamps: true,
