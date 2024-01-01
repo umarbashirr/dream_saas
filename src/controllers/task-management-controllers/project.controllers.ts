@@ -12,7 +12,9 @@ const getAllProjects = asyncHandler(async (req: any, res: Response) => {
   const projects = await Project.find({
     $or: [{ owner: userId }, { members: userId }],
     isDeleted: false,
-  });
+  })
+    .populate("owner", "name email")
+    .populate("members", "name email");
 
   res
     .status(200)
@@ -27,7 +29,9 @@ const getProjectById = asyncHandler(async (req: any, res: Response) => {
     _id: projectId,
     $or: [{ owner: userId }, { members: userId }],
     isDeleted: false,
-  });
+  })
+    .populate("owner", "name email")
+    .populate("members", "name email");
 
   res
     .status(200)
@@ -37,6 +41,10 @@ const getProjectById = asyncHandler(async (req: any, res: Response) => {
 const createProject = asyncHandler(async (req: any, res: Response) => {
   const userId = req?.user?._id;
   const { name, description } = req.body;
+
+  if (!name.trim()) {
+    throw new ApiError(400, "Project name is required");
+  }
 
   const newProject = new Project({
     name,

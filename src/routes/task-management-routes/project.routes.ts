@@ -13,12 +13,12 @@ const router = Router();
 // Secure routes
 router.route("/").get(verifyJWT, getAllProjects);
 
-router.route("/projects/:id").get(verifyJWT, getProjectById);
+router.route("/:id").get(verifyJWT, getProjectById);
 
 router.route("/").post(verifyJWT, createProject);
 
-router.route("/projects/:id").put(verifyJWT, updateProject);
+router.route("/:id").put(verifyJWT, updateProject);
 
-router.route("/projects/:id").delete(verifyJWT, deleteProject);
+router.route("/:id").delete(verifyJWT, deleteProject);
 
 export default router;
