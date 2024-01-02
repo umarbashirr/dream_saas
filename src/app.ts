@@ -21,10 +21,12 @@ import userRoutes from "./routes/user.routes";
 import projectRoutes from "./routes/task-management-routes/project.routes";
 import taskRoutes from "./routes/task-management-routes/task.routes";
 import tagRoutes from "./routes/task-management-routes/tag.routes";
+import commentRoutes from "./routes/task-management-routes/comment.routes";
 
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/projects", projectRoutes);
 app.use("/api/v1/tasks", taskRoutes);
 app.use("/api/v1/tags", tagRoutes);
+app.use("/api/v1/comments", commentRoutes);
 
 export { app };

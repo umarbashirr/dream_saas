@@ -11,6 +11,7 @@ import {
 const router = Router();
 
 // Secure routes
+
 router.route("/").get(verifyJWT, getAllProjects);
 
 router.route("/:id").get(verifyJWT, getProjectById);

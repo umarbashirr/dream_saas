@@ -7,8 +7,6 @@ import { ApiError } from "../../utils/ApiError";
 const getAllProjects = asyncHandler(async (req: any, res: Response) => {
   const userId = req?.user?._id;
 
-  // Find project by owner id or members include userId and isDeleted = false
-
   const projects = await Project.find({
     $or: [{ owner: userId }, { members: userId }],
     isDeleted: false,
