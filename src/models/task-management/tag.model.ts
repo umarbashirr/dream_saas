@@ -5,9 +5,7 @@ const TagSchema = new Schema(
     name: { type: String, required: true },
     color: { type: String, required: true },
     tasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
-    isDeleted: { type: Boolean, default: false },
-    deletedAt: { type: String },
-    deletedBy: { type: Schema.Types.ObjectId, ref: "User" },
+    createdBy: { type: Schema.Types.ObjectId, ref: "User" },
   },
   {
     timestamps: true,
